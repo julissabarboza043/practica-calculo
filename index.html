@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Práctica de Cálculo</title>
+  <meta name="description" content="Práctica por temas de Cálculo II: preguntas de selección única con explicación.">
+  <meta name="theme-color" content="#000000">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div id="demo-banner" class="demo-banner" hidden>Modo demo: los datos se guardan solo en este navegador. Código del curso: <b>DEMO</b>. <button type="button" id="demo-reset" class="linkbtn">Reiniciar demo</button></div>
+
+  <!-- ============ CUENTA ============ -->
+  <section id="login" class="screen" hidden>
+    <div class="wrap">
+      <div class="hero">
+        <div class="big">🚀</div>
+        <h1>Práctica de Cálculo</h1>
+        <div class="sub">Elija un tema y avance pregunta por pregunta</div>
+      </div>
+      <form class="card" id="login-form">
+        <h2 class="title small" style="margin-top:0">Entrar con su cuenta</h2>
+        <p class="help" id="login-help">Use <b>el mismo correo y contraseña de la Racha de Cálculo</b>. Así su puntaje y su lugar en el ranking siempre quedan en su cuenta, aunque cambie de teléfono.</p>
+        <div class="field">
+          <label for="lg-email-s">Correo</label>
+          <input id="lg-email-s" type="email" autocomplete="username" placeholder="nombre@ucr.ac.cr" required>
+        </div>
+        <div class="field">
+          <label for="lg-pass-s">Contraseña</label>
+          <input id="lg-pass-s" type="password" autocomplete="current-password" minlength="6" required>
+        </div>
+        <button class="btn block" id="login-btn" type="submit">Entrar</button>
+        <div class="err" id="login-err" role="alert"></div>
+        <p class="help center">¿No tiene cuenta todavía? <button type="button" class="linkbtn" id="signup-btn">Crear una cuenta con este correo</button></p>
+      </form>
+      <div class="foot"><a class="linkbtn" href="#profe">👩‍🏫 Soy la profesora</a></div>
+    </div>
+  </section>
+
+  <!-- ============ ENTRADA AL CURSO ============ -->
+  <section id="join" class="screen" hidden>
+    <div class="wrap">
+      <div class="hero">
+        <div class="big">🚀</div>
+        <h1>Práctica de Cálculo</h1>
+        <div class="sub" id="join-who"></div>
+      </div>
+      <form class="card" id="join-form" autocomplete="off">
+        <div class="field">
+          <label for="name-in">Su nombre (así sale en el ranking)</label>
+          <input id="name-in" maxlength="40" placeholder="Ej: Ana María Rojas" required>
+        </div>
+        <div class="field">
+          <label for="code-in">Código del curso</label>
+          <input id="code-in" maxlength="20" placeholder="Se lo da la profesora" autocapitalize="characters" required>
+        </div>
+        <div class="field"><label>Elija su muñequito</label></div>
+        <div class="avatars" id="avatars"></div>
+        <button class="btn block" id="join-btn" type="submit">¡Entrar! 🚀</button>
+        <div class="err" id="join-err" role="alert"></div>
+        <ul class="rules">
+          <li>🎯 <span>Cada partida tiene <b>hasta <span class="js-max">10</span> preguntas</b> del tema que elija.</span></li>
+          <li>⭐ <span><b>+10</b> por correcta, <b>−3</b> por fallo.</span></li>
+          <li>🔁 <span>Si falla, ve una pista y le sale una <b>pregunta similar</b>.</span></li>
+          <li>🏆 <span>Cada tema tiene su ranking: cuenta su mejor partida. En empate gana quien la terminó <b>en menos tiempo</b>.</span></li>
+        </ul>
+      </form>
+      <div class="foot"><button type="button" class="linkbtn js-logout">Salir de la cuenta</button></div>
+    </div>
+  </section>
+
+  <!-- ============ TEMAS ============ -->
+  <section id="topics" class="screen" hidden>
+    <div class="topbar"><div class="row">
+      <div class="me"><span class="av" id="t-av"></span><span class="nm" id="t-name"></span></div>
+      <button class="chip" type="button" id="t-change">Cambiar</button>
+    </div></div>
+    <div class="wrap">
+      <h2 class="title">¿Qué quiere practicar?</h2>
+      <div class="sub" id="t-course"></div>
+      <div class="topic-grid" id="topic-grid"></div>
+      <div class="empty" id="t-empty" hidden><div class="big">📭</div>Todavía no hay temas. La profesora los irá agregando.</div>
+      <div class="err" id="t-err" role="alert"></div>
+      <div class="foot"><span class="help" id="t-email"></span> <button type="button" class="linkbtn js-logout">Salir de la cuenta</button> <a class="linkbtn" href="#profe">👩‍🏫 Soy la profesora</a></div>
+    </div>
+  </section>
+
+  <!-- ============ JUEGO ============ -->
+  <section id="play" class="screen" hidden>
+    <div class="topbar"><div class="row">
+      <button class="chip" type="button" id="p-exit" aria-label="Salir al menú de temas">✕</button>
+      <div class="me"><span class="av" id="p-av"></span><span class="nm" id="p-name"></span></div>
+      <span class="chip" id="p-time">⏱ 0:00</span>
+      <span class="chip pts" id="p-pts">⭐ 0</span>
+    </div></div>
+    <div class="pathbox">
+      <div class="path" id="path"></div>
+      <div class="progress-txt"><span id="p-level"></span><span id="p-ok"></span></div>
+    </div>
+    <div class="qcard"><div class="card">
+      <div class="qmeta"><span class="tag" id="q-topic"></span><span class="tag twin" id="q-twin" hidden>Pregunta similar</span></div>
+      <div class="qtext" id="q-text"></div>
+      <div class="opts" id="opts"></div>
+    </div></div>
+    <div class="fb" id="fb" hidden><div class="card">
+      <h3 id="fb-title"></h3>
+      <div class="ex" id="fb-ex"></div>
+      <button class="btn block" type="button" id="fb-btn">Seguir</button>
+    </div></div>
+    <div class="err center" id="p-err" role="alert"></div>
+  </section>
+
+  <!-- ============ FINAL ============ -->
+  <section id="end" class="screen" hidden>
+    <div class="wrap center">
+      <div class="big" id="e-big">🏆</div>
+      <h1 id="e-title">¡Terminó!</h1>
+      <div class="sub" id="e-sub"></div>
+      <div class="stats">
+        <div class="stat"><div class="v" id="e-pts">0</div><div class="l">puntos</div></div>
+        <div class="stat"><div class="v" id="e-ok">0</div><div class="l">correctas</div></div>
+        <div class="stat"><div class="v" id="e-time">0:00</div><div class="l">tiempo</div></div>
+      </div>
+      <div class="row2">
+        <button class="btn" type="button" id="e-again">Jugar otra vez 🔁</button>
+        <button class="btn ghost" type="button" id="e-topics">Otro tema</button>
+      </div>
+      <h2 class="title small">🏆 Ranking del tema</h2>
+      <div class="rank" id="e-rank"></div>
+    </div>
+  </section>
+
+  <!-- ============ PROFESORA ============ -->
+  <section id="profe" class="screen" hidden>
+    <div class="hbar">
+      <h1>👩‍🏫 Panel de profesora</h1>
+      <span class="grow"></span>
+      <select id="course-select" class="select" aria-label="Curso" hidden></select>
+      <a class="btn ghost sm" href="#">Ir al juego</a>
+      <button class="btn ghost sm" type="button" id="logout" hidden>Salir</button>
+    </div>
+    <div class="hbody" id="profe-body"></div>
+  </section>
+
+  <!-- ranking de un tema (desde el menú) -->
+  <div class="modal" id="rank-modal" hidden><div class="card">
+    <h3 id="rm-title"></h3>
+    <div class="rank" id="rm-list"></div>
+    <button class="btn block ghost" type="button" id="rm-close">Cerrar</button>
+  </div></div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
